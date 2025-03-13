@@ -6,4 +6,4 @@ REM Запустить программу на Python
 python main.py
 
 REM Деактивировать виртуальное окружение
-deactivate
+.venv\Scripts\deactivate
