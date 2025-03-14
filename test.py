@@ -42,33 +42,37 @@ def main(page: ft.Page):
             if status['alertnow']:
                 if not alert_triggered:
                     status_text.value = f"( {status['changed']} ) - Тривога активна!"
-                    status_text.color = ft.colors.RED
+                    status_text.Color = ft.Colors.RED
                     Thread(target=play_alert_sound).start()
                     alert_triggered = True
                 else:
                     status_text.value = f"( {status['changed']} ) - Тривога активна, звук вже відтворено."
-                    status_text.color = ft.colors.RED
+                    status_text.Color = ft.Colors.RED
             else:
                 if alert_triggered:
                     status_text.value = f"( {status['changed']} ) - Тривога скасована!"
-                    status_text.color = ft.colors.GREEN
+                    status_text.Color = ft.Colors.GREEN
                     Thread(target=play_clear_sound).start()
                     alert_triggered = False
                 else:
                     status_text.value = f"( {status['changed']} ) - Тривоги немає."
-                    status_text.color = ft.colors.GREEN
+                    status_text.Color = ft.Colors.GREEN
         except KeyError:
             status_text.value = "Ошибка: данных по 'Дніпропетровська область' нет в ответе сервера."
-            status_text.color = ft.colors.ORANGE
+            status_text.Color = ft.Colors.ORANGE
         except requests.exceptions.RequestException as e:
             status_text.value = f"Ошибка запроса: {e}"
-            status_text.color = ft.colors.ORANGE
+            status_text.Color = ft.Colors.ORANGE
         except Exception as e:
             status_text.value = f"Произошла ошибка: {e}"
-            status_text.color = ft.colors.ORANGE
+            status_text.Color = ft.Colors.ORANGE
         page.update()
-        page.after(5, update_status)
 
-    update_status()
+    def create_timer():
+        page.timer = ft.Timer(5, update_status)
+        page.timer.repeat = True  # repeat the timer.
+        page.timer.start()
+
+    create_timer()
 
 ft.app(target=main)
